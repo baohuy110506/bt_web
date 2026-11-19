@@ -60,7 +60,37 @@ bt3_web/
 
 ## 3. Danh Sách Các Chức Năng Đã Hoàn Thành
 
-### 1. Đăng ký & Kích hoạt tài khoản bằng OTP qua Email
+### 1. Cấu hình SiteMesh Decorator 3 với Template Bootstrap 5
+- Tích hợp thư viện **SiteMesh 3.2.1** tương thích chuẩn **Jakarta EE 10 / Servlet 6.0**.
+- Cấu hình qua Filter `SiteMeshFilter.java`, `sitemesh3.xml` và `web.xml`.
+- Xây dựng 01 bộ **Template Bootstrap 5** thống nhất:
+  - `web.jsp`: Template người dùng có Navbar responsive, Dropdown menu thông tin tài khoản, Container nội dung `<sitemesh:write property="body"/>`, và Footer chuyên nghiệp.
+  - `admin.jsp`: Template quản trị Admin dành riêng cho các trang `/admin/*`.
+
+### 2. Validation Toàn Diện Cho Các Chức Năng Có Form
+- Xây dựng tiện ích kiểm tra `ValidationUtil.java` (Regex email, số điện thoại VN, username, videoId, định dạng file ảnh).
+- **Validation 2 lớp đồng bộ**:
+  - **Client-side**: HTML5 và class `needs-validation` của Bootstrap 5, phản hồi thời gian thực khi nhập mật khẩu khớp, định dạng pattern.
+  - **Server-side**: Kiểm tra chi tiết trong Servlet Controllers, giữ lại dữ liệu đã nhập trên form khi có lỗi.
+  - **Áp dụng cho đầy đủ các Form**:
+    - `Login`: Bắt lỗi rỗng, độ dài mật khẩu, kiểm tra tài khoản chưa kích hoạt OTP.
+    - `Register`: Kiểm tra tên đăng nhập (3-30 ký tự, không dấu), định dạng email, số điện thoại VN, độ dài mật khẩu $\ge$ 6, kiểm tra mật khẩu xác nhận, kiểm tra trùng username / email trong CSDL.
+    - `Forgot Password & Reset Password`: Kiểm tra dữ liệu nhập, mã OTP 6 số, mật khẩu mới.
+    - `Category Insert & Edit`: Bắt lỗi tên danh mục (2-100 ký tự), kiểm tra file ảnh tải lên.
+    - `Video Insert & Edit`: Kiểm tra mã Video ID (không trùng lặp trong DB), tiêu đề (3-200 ký tự), bắt buộc chọn Category liên kết, kiểm tra poster.
+
+### 3. Chức Năng Profile User & Upload Cloudinary Bằng Multipart
+- Truy cập tại URL `/user/profile` hoặc `/profile` (được bảo vệ đăng nhập và quản lý giao diện bởi **SiteMesh 3**).
+- **Cập nhật thông tin cá nhân**:
+  - Cập nhật `fullname`, `phone`.
+  - **Cập nhật Avatar lên Cloudinary bằng Multipart**: Tích hợp Cloudinary Java SDK (`cloudinary-http5`) qua `CloudinaryUtil.java`, đọc credentials từ `.env`, upload trực tiếp qua Jakarta Servlet `@MultipartConfig` và lưu secure URL của Cloudinary. Có cơ chế fallback lưu cục bộ nếu chưa cấu hình API key.
+- **Cập nhật Email mới xác thực qua OTP**:
+  - Khi người dùng nhập địa chỉ email mới khác với email hiện tại, hệ thống sẽ tự động tạo mã OTP gồm 6 chữ số và gửi đến **chính địa chỉ email mới đó**.
+  - Đồng thời in mã OTP ra Console máy chủ để thuận tiện kiểm thử, chấm điểm.
+  - Chuyển hướng người dùng sang trang `/user/profile/verify-otp`.
+  - Chỉ khi người dùng nhập chính xác mã OTP, hệ thống mới cập nhật email mới vào CSDL.
+
+### 4. Đăng ký & Kích hoạt tài khoản bằng OTP qua Email
 - Tại `/register`: Đăng ký tài khoản mới, mật khẩu được mã hóa an toàn bằng **BCrypt**.
 - Hệ thống tự động sinh mã OTP 6 số và gửi qua email để kích hoạt. Đồng thời in mã OTP tại Console máy chủ để thuận tiện chấm điểm, kiểm thử.
 - Người dùng chuyển sang `/verify-otp` để nhập mã OTP kích hoạt tài khoản.
