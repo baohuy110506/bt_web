@@ -186,8 +186,6 @@
     </style>
 </head>
 <body>
-    <jsp:include page="/views/common/topbar.jsp" />
-
     <div class="main-container">
         <!-- CỘT TRÁI: VIDEO PLAYER VÀ CHI TIẾT -->
         <div>

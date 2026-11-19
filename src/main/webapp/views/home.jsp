@@ -182,8 +182,6 @@
     </style>
 </head>
 <body>
-    <jsp:include page="/views/common/topbar.jsp" />
-
     <div class="hero">
         <h1>Nền Tảng Đa Phương Tiện & Danh Mục JPA</h1>
         <p>Hệ thống hỗ trợ Đăng ký xác thực OTP Email, Mã hóa mật khẩu BCrypt, Quên mật khẩu OTP, Quản lý Video (1-N với User) và Phân trang 6 Video/Trang.</p>

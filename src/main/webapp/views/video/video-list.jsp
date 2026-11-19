@@ -182,8 +182,6 @@
     </style>
 </head>
 <body>
-    <jsp:include page="/views/common/topbar.jsp" />
-
     <div class="page-header">
         <h1><i class="fa fa-film"></i> Tất Cả Videos (URL: /video)</h1>
         <p>Phân trang chuẩn 6 sản phẩm/trang theo yêu cầu đề bài</p>
