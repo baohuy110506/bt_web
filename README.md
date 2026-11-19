@@ -1,26 +1,32 @@
-# BÀI TẬP 3: LẬP TRÌNH WEB - XÁC THỰC OTP, BCRYPT, QUẢN LÝ VIDEO (JPA 1-N USER) & PHÂN TRANG
+# BÀI TẬP 4: LẬP TRÌNH WEB - SITEMESH DECORATOR 3, VALIDATION FORM & USER PROFILE VỚI CLOUDINARY MULTIPART
 
-Dự án môn học **Lập Trình Web** sử dụng **Jakarta EE (Servlet 6.0)**, **Hibernate ORM 6** và **Microsoft SQL Server**, hoàn thành đầy đủ các yêu cầu theo bài tập:
+Dự án môn học **Lập Trình Web** (Bài Tập 04) phát triển trên nền tảng **Jakarta EE (Servlet 6.0)**, **Hibernate ORM 6**, **Microsoft SQL Server**, hoàn thành đầy đủ 3 chức năng chính theo đúng yêu cầu đề bài:
 
-1. **Kích hoạt tài khoản bằng mã OTP qua Email** khi đăng ký tài khoản.
-2. **Đăng nhập với mật khẩu được mã hóa (BCrypt)** và **Đăng xuất**.
-3. **Quên mật khẩu gửi mã xác nhận OTP qua Email** để thiết lập lại mật khẩu mới.
-4. **Bảng Videos có mối quan hệ 1-N với bảng Users**:
-   - Thực hiện đầy đủ **CRUD cho bảng Videos** (Thêm, Sửa, Xóa, Xem).
-   - Hiển thị **10 video mới nhất lên trang chủ** (`/home`).
-   - Hiển thị tất cả **videos của user và được phân trang 6sp/trang** tại URL `/video`.
-   - Hiển thị chi tiết và **play 01 video khi bấm chuột vào tiêu đề của video đó** trên trang chủ `/home` và trên trang `/video`.
-5. **Upload file bằng Multipart** theo chuẩn Jakarta Servlet `@MultipartConfig`.
+1. **Cấu hình SiteMesh Decorator 3 với 01 Template Bootstrap 5**:
+   - Quản lý layout giao diện thống nhất cho toàn bộ hệ thống bằng SiteMesh 3.
+   - Xây dựng Template Bootstrap 5 responsive, hiện đại (gồm giao diện người dùng và giao diện quản trị Admin).
+2. **Thực hiện Validation toàn diện cho tất cả các chức năng có FORM**:
+   - Validation 2 lớp (Client-side HTML5 Bootstrap 5 & Server-side trong Servlet Controller).
+   - Áp dụng đầy đủ cho các Form: `Login`, `Register`, `Forgot Password`, `Reset Password`, `Category Insert/Edit`, `Video Insert/Edit`.
+3. **Xây dựng chức năng Profile User**:
+   - Cho phép người dùng xem và cập nhật thông tin cá nhân: `fullname`, `phone`.
+   - Cập nhật email mới: Hệ thống tự động gửi **mã OTP 6 số đến email mới** để xác nhận trước khi cập nhật thành công vào CSDL.
+   - Upload ảnh đại diện Avatar lên **Cloudinary bằng Multipart** (@MultipartConfig), lưu trữ an toàn trên đám mây.
+   - Toàn bộ giao diện trang Profile và trang xác thực OTP email mới được quản lý bởi **SiteMesh Decorator 3**.
 
 ---
 
 ## 1. Công Nghệ Sử Dụng
 
-- **Ngôn ngữ**: Java 17+ (tương thích từ JDK 17 đến JDK 26)
+- **Ngôn ngữ**: Java 17+ (tương thích JDK 17 đến JDK 26)
 - **Nền tảng Web**: Jakarta Servlet 6.0, JSP 3.1, JSTL 3.0
+- **SiteMesh Decorator**: SiteMesh 3.2.1 (chuẩn Jakarta EE)
+- **Giao diện Front-end**: Bootstrap 5.3.3, Font Awesome 6.5.1, Google Fonts Inter
+- **Lưu trữ đám mây**: Cloudinary Java SDK 2.0.0 (upload multipart)
+- **Email Service**: Jakarta Mail API & Angus Mail (gửi OTP qua Gmail SMTP)
+- **Mã hóa mật khẩu**: BCrypt (`jbcrypt`)
 - **ORM / JPA Provider**: Hibernate Core 6.4.4.Final, Jakarta Persistence API 3.1
 - **Hệ quản trị CSDL**: Microsoft SQL Server (database: `webst2`)
-- **Mã hóa mật khẩu**: Thuật toán BCrypt an toàn (`jbcrypt`)
 - **Web Server**: Apache Tomcat 10+ / Tomcat 11
 
 ---
