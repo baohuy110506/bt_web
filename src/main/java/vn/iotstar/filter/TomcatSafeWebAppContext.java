@@ -24,16 +24,14 @@ public class TomcatSafeWebAppContext extends WebAppContext {
         if (dispatcher == null) {
             throw new ServletException("Không tìm thấy đường dẫn decorator: " + path);
         }
-        // Trên Apache Tomcat 10/11, sau khi Servlet Controller đã forward tới JSP con,
-        // response bị đánh dấu committed. Ta dùng include thay vì forward để tương thích hoàn hảo.
-        if (response.isCommitted()) {
-            dispatcher.include(request, response);
-        } else {
-            try {
-                dispatcher.forward(request, response);
-            } catch (IllegalStateException e) {
+        try {
+            if (response.isCommitted()) {
                 dispatcher.include(request, response);
+            } else {
+                dispatcher.forward(request, response);
             }
+        } catch (IllegalStateException e) {
+            dispatcher.include(request, response);
         }
     }
 }
