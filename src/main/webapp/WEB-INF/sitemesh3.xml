@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemesh>
-    <!-- Template Bootstrap cho khu vực người dùng -->
-    <mapping path="/*" decorator="/views/decorators/web.jsp" />
-
-    <!-- Template Bootstrap cho khu vực Quản trị Admin -->
-    <mapping path="/admin/*" decorator="/views/decorators/admin.jsp" />
+    <!-- Loại trừ chính các template decorator để tránh lặp trang trí -->
+    <mapping path="/views/decorators/*" exclude="true" />
+    <mapping path="/decorators/*" exclude="true" />
 
     <!-- Loại trừ các tài nguyên tĩnh -->
     <mapping path="/image/*" exclude="true" />
     <mapping path="/static/*" exclude="true" />
     <mapping path="/assets/*" exclude="true" />
+
+    <!-- Template Bootstrap cho khu vực Quản trị Admin -->
+    <mapping path="/admin/*" decorator="/WEB-INF/decorators/admin.jsp" />
+
+    <!-- Template Bootstrap cho khu vực người dùng -->
+    <mapping path="/*" decorator="/WEB-INF/decorators/web.jsp" />
 </sitemesh>

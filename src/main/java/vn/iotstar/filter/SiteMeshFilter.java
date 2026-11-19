@@ -1,21 +1,45 @@
 package vn.iotstar.filter;
 
-import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.Filter;
+import jakarta.servlet.ServletException;
 import org.sitemesh.builder.SiteMeshFilterBuilder;
 import org.sitemesh.config.ConfigurableSiteMeshFilter;
 
-@WebFilter(filterName = "sitemesh", urlPatterns = "/*")
 public class SiteMeshFilter extends ConfigurableSiteMeshFilter {
 
     @Override
+    protected Filter setup() throws ServletException {
+        SiteMeshFilterBuilder builder = new SiteMeshFilterBuilder() {
+            @Override
+            public Filter create() {
+                return new TomcatSafeSiteMeshFilter(getSelector(), getContentProcessor(), getDecoratorSelector(), isIncludeErrorPages());
+            }
+        };
+        applyCustomConfiguration(builder);
+        return builder.create();
+    }
+
+    @Override
     protected void applyCustomConfiguration(SiteMeshFilterBuilder builder) {
-        // Áp dụng template Bootstrap mặc định cho toàn bộ trang web
-        builder.addDecoratorPath("/*", "/views/decorators/web.jsp")
-               // Template Bootstrap dành cho khu vực Quản trị Admin
-               .addDecoratorPath("/admin/*", "/views/decorators/admin.jsp")
-               // Bỏ qua các đường dẫn tĩnh hoặc tài nguyên
+        builder.setDecoratorPrefix("")
+               .addExcludedPath("/views/decorators/*")
+               .addExcludedPath("/decorators/*")
                .addExcludedPath("/image/*")
                .addExcludedPath("/static/*")
-               .addExcludedPath("/assets/*");
+               .addExcludedPath("/assets/*")
+               // Template Bootstrap cho khu vực Quản trị Admin
+               .addDecoratorPath("/admin/*", "/WEB-INF/decorators/admin.jsp")
+               // Áp dụng template Bootstrap mặc định cho toàn bộ trang web
+               .addDecoratorPath("/*", "/WEB-INF/decorators/web.jsp");
+    }
+
+    @Override
+    protected boolean reloadRequired() {
+        return false;
+    }
+
+    @Override
+    protected boolean getAutoReload() {
+        return false;
     }
 }
