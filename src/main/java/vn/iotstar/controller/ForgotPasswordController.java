@@ -27,8 +27,17 @@ public class ForgotPasswordController extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
 
         String emailOrUsername = req.getParameter("emailOrUsername");
+        
+        java.util.Map<String, String> errors = new java.util.HashMap<>();
         if (emailOrUsername == null || emailOrUsername.trim().isEmpty()) {
-            req.setAttribute("alert", "Vui lòng nhập Email hoặc Tên đăng nhập của bạn!");
+            errors.put("emailOrUsername", "Vui lòng nhập Email hoặc Tên đăng nhập của bạn!");
+        } else if (emailOrUsername.trim().length() < 3) {
+            errors.put("emailOrUsername", "Thông tin nhập vào phải có độ dài tối thiểu 3 ký tự!");
+        }
+
+        if (!errors.isEmpty()) {
+            req.setAttribute("errors", errors);
+            req.setAttribute("emailOrUsername", emailOrUsername);
             req.getRequestDispatcher("/views/forgot-password.jsp").forward(req, resp);
             return;
         }

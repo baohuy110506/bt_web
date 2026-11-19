@@ -46,16 +46,29 @@ public class ResetPasswordController extends HttpServlet {
             }
         }
 
-        if (otp == null || otp.trim().isEmpty() || newPassword == null || newPassword.trim().isEmpty()) {
-            req.setAttribute("alert", "Vui lòng nhập đầy đủ mã OTP và mật khẩu mới!");
-            req.setAttribute("user", user);
-            req.getRequestDispatcher("/views/reset-password.jsp").forward(req, resp);
-            return;
+        java.util.Map<String, String> errors = new java.util.HashMap<>();
+        if (otp == null || otp.trim().isEmpty()) {
+            errors.put("otp", "Vui lòng nhập mã OTP!");
+        } else if (otp.trim().length() != 6) {
+            errors.put("otp", "Mã OTP phải có đúng 6 chữ số!");
         }
 
-        if (!newPassword.equals(confirmPassword)) {
-            req.setAttribute("alert", "Mật khẩu xác nhận không trùng khớp!");
+        if (newPassword == null || newPassword.trim().isEmpty()) {
+            errors.put("newPassword", "Vui lòng nhập mật khẩu mới!");
+        } else if (newPassword.trim().length() < 6) {
+            errors.put("newPassword", "Mật khẩu mới phải có tối thiểu 6 ký tự!");
+        }
+
+        if (confirmPassword == null || confirmPassword.trim().isEmpty()) {
+            errors.put("confirmPassword", "Vui lòng xác nhận lại mật khẩu mới!");
+        } else if (!newPassword.equals(confirmPassword)) {
+            errors.put("confirmPassword", "Mật khẩu xác nhận không trùng khớp!");
+        }
+
+        if (!errors.isEmpty()) {
+            req.setAttribute("errors", errors);
             req.setAttribute("user", user);
+            req.setAttribute("otp", otp);
             req.getRequestDispatcher("/views/reset-password.jsp").forward(req, resp);
             return;
         }

@@ -4,177 +4,114 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Xác Thực OTP Kích Hoạt Tài Khoản</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Xác Thực Mã OTP Kích Hoạt Tài Khoản</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', 'Segoe UI', Arial, sans-serif; }
-        body {
-            background: linear-gradient(135deg, #1e293b 0%, #0284c7 100%);
-            min-height: 100vh;
+        .auth-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 40px 15px;
+            min-height: calc(100vh - 200px);
         }
-        .otp-card {
+        .card-custom {
             background: white;
-            padding: 35px 40px;
+            padding: 35px 35px;
             border-radius: 14px;
             width: 100%;
             max-width: 440px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-            text-align: center;
-        }
-        .icon-circle {
-            width: 70px;
-            height: 70px;
-            background: #e0f2fe;
-            color: #0284c7;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            margin: 0 auto 18px;
-        }
-        .otp-card h2 {
-            color: #1e293b;
-            margin-bottom: 8px;
-            font-size: 22px;
-            font-weight: 700;
-        }
-        .desc {
-            font-size: 14px;
-            color: #64748b;
-            margin-bottom: 22px;
-            line-height: 1.5;
-        }
-        .alert-danger {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            border-left: 4px solid #ef4444;
-            text-align: left;
-        }
-        .alert-success {
-            background: #dcfce7;
-            color: #15803d;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            border-left: 4px solid #22c55e;
-            text-align: left;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
         }
         .otp-input {
-            width: 100%;
-            padding: 14px;
-            font-size: 24px;
+            letter-spacing: 6px;
+            font-size: 1.35rem;
             text-align: center;
-            letter-spacing: 8px;
             font-weight: 700;
-            border: 2px solid #cbd5e1;
-            border-radius: 8px;
-            outline: none;
-            color: #1e293b;
-            transition: border-color 0.2s;
-            margin-bottom: 20px;
-        }
-        .otp-input:focus {
-            border-color: #0284c7;
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
-        }
-        .btn-submit {
-            width: 100%;
-            padding: 13px;
-            background: #0284c7;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-submit:hover {
-            background: #0369a1;
-        }
-        .resend-box {
-            margin-top: 22px;
-            font-size: 14px;
-            color: #64748b;
-        }
-        .resend-box a {
-            color: #0284c7;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .console-tip {
-            margin-top: 20px;
-            padding: 10px;
-            background: #f8fafc;
-            border: 1px dashed #cbd5e1;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #475569;
-            line-height: 1.5;
         }
     </style>
 </head>
 <body>
-    <div class="otp-card">
-        <div class="icon-circle">
-            <i class="fa fa-envelope-open-text"></i>
-        </div>
-
-        <h2>Xác Thực Kích Hoạt Tài Khoản</h2>
-        <p class="desc">
-            Vui lòng nhập mã OTP gồm 6 chữ số được gửi đến email của bạn để kích hoạt tài khoản
-            <c:if test="${not empty username}"><strong>(${username})</strong></c:if>.
-        </p>
-
-        <c:if test="${not empty alert}">
-            <div class="alert-danger">
-                <i class="fa fa-circle-exclamation"></i> ${alert}
+    <div class="auth-container">
+        <div class="card-custom">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-shield-halved fa-3x text-primary mb-2"></i>
+                <h3 class="fw-bold mb-1">Xác Thực Mã OTP</h3>
+                <p class="text-muted small">
+                    Nhập mã xác thực gồm 6 chữ số đã được gửi tới email của tài khoản 
+                    <strong class="text-primary">${username}</strong>
+                </p>
             </div>
-        </c:if>
 
-        <c:if test="${not empty msg}">
-            <div class="alert-success">
-                <i class="fa fa-circle-check"></i> ${msg}
+            <c:if test="${not empty msg}">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fa fa-circle-check me-2"></i> ${msg}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </c:if>
+
+            <c:if test="${not empty alert}">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa fa-circle-exclamation me-2"></i> ${alert}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </c:if>
+
+            <form action="${pageContext.request.contextPath}/verify-otp" method="post" class="needs-validation" novalidate id="otpForm">
+                <input type="hidden" name="username" value="${username}">
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold small">Mã Xác Thực OTP (6 số) <span class="text-danger">*</span></label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text"><i class="fa fa-key text-secondary"></i></span>
+                        <input type="text" 
+                               name="otp" 
+                               id="otp" 
+                               class="form-control otp-input" 
+                               placeholder="123456" 
+                               maxlength="6" 
+                               pattern="^[0-9]{6}$" 
+                               required 
+                               autofocus>
+                        <div class="invalid-feedback">
+                            Vui lòng nhập đúng 6 chữ số mã OTP!
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                    <i class="fa fa-circle-check me-1"></i> Kích Hoạt Tài Khoản
+                </button>
+            </form>
+
+            <div class="text-center mt-3 pt-3 border-top small">
+                Chưa nhận được mã? 
+                <a href="${pageContext.request.contextPath}/resend-otp?username=${username}" class="text-decoration-none text-primary fw-semibold">
+                    <i class="fa fa-redo me-1"></i> Gửi lại mã OTP
+                </a>
             </div>
-        </c:if>
 
-        <form action="${pageContext.request.contextPath}/verify-otp" method="post">
-            <input type="hidden" name="username" value="${username}">
-            
-            <input type="text" name="otp" class="otp-input" maxlength="6" placeholder="000000" pattern="[0-9]{6}" required autofocus>
-
-            <button type="submit" class="btn-submit">
-                <i class="fa fa-check-circle"></i> Kích Hoạt Tài Khoản
-            </button>
-        </form>
-
-        <div class="resend-box">
-            Chưa nhận được mã? 
-            <a href="${pageContext.request.contextPath}/resend-otp?username=${username}">
-                <i class="fa fa-rotate-right"></i> Gửi lại mã OTP
-            </a>
-        </div>
-
-        <div class="console-tip">
-            💡 <strong>Mẹo kiểm thử:</strong> Nếu đang test môi trường local chưa cấu hình Gmail App Password, bạn hãy mở <strong>Console/Terminal</strong> của máy chủ Eclipse/Tomcat để xem mã OTP in tự động!
-        </div>
-
-        <div style="margin-top: 15px; font-size: 13px;">
-            <a href="${pageContext.request.contextPath}/login" style="color: #64748b; text-decoration: none;">&larr; Quay lại đăng nhập</a>
+            <div class="text-center mt-2 small">
+                <a href="${pageContext.request.contextPath}/login" class="text-secondary text-decoration-none">
+                    <i class="fa fa-arrow-left me-1"></i> Quay lại Đăng Nhập
+                </a>
+            </div>
         </div>
     </div>
+
+    <script>
+        (function () {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
 </body>
 </html>

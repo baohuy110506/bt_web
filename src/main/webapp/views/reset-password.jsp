@@ -5,165 +5,145 @@
 <head>
     <meta charset="UTF-8">
     <title>Đặt Lại Mật Khẩu Mới</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', 'Segoe UI', Arial, sans-serif; }
-        body {
-            background: linear-gradient(135deg, #1e293b 0%, #0284c7 100%);
-            min-height: 100vh;
+        .auth-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 40px 15px;
+            min-height: calc(100vh - 200px);
         }
-        .card {
+        .card-custom {
             background: white;
-            padding: 35px 40px;
+            padding: 35px 35px;
             border-radius: 14px;
             width: 100%;
             max-width: 440px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-        }
-        .card h2 {
-            text-align: center;
-            color: #1e293b;
-            margin-bottom: 8px;
-            font-size: 22px;
-            font-weight: 700;
-        }
-        .desc {
-            text-align: center;
-            font-size: 14px;
-            color: #64748b;
-            margin-bottom: 22px;
-            line-height: 1.5;
-        }
-        .alert-danger {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            border-left: 4px solid #ef4444;
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #334155;
-        }
-        .input-group {
-            display: flex;
-            align-items: center;
-            border: 1.5px solid #cbd5e1;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: border-color 0.2s;
-        }
-        .input-group:focus-within {
-            border-color: #0284c7;
-        }
-        .input-group-addon {
-            padding: 11px 14px;
-            background: #f1f5f9;
-            color: #64748b;
-            font-size: 14px;
-        }
-        .form-control {
-            width: 100%;
-            padding: 11px 12px;
-            border: none;
-            outline: none;
-            font-size: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
         }
         .otp-input {
-            letter-spacing: 6px;
+            letter-spacing: 4px;
+            font-size: 1.25rem;
+            text-align: center;
             font-weight: 700;
-            font-size: 18px;
-            text-align: center;
-        }
-        .btn-submit {
-            width: 100%;
-            padding: 13px;
-            background: #0284c7;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 10px;
-        }
-        .btn-submit:hover {
-            background: #0369a1;
-        }
-        .footer-links {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-        }
-        .footer-links a {
-            color: #0284c7;
-            text-decoration: none;
-            font-weight: 600;
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Đặt Lại Mật Khẩu</h2>
-        <p class="desc">Nhập mã OTP đã nhận qua Email và mật khẩu mới cho tài khoản <strong>${user}</strong></p>
-
-        <c:if test="${not empty alert}">
-            <div class="alert-danger">
-                <i class="fa fa-circle-exclamation"></i> ${alert}
+    <div class="auth-container">
+        <div class="card-custom">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-lock-open fa-3x text-primary mb-2"></i>
+                <h3 class="fw-bold mb-1">Đặt Lại Mật Khẩu</h3>
+                <p class="text-muted small">Nhập mã OTP vừa nhận qua email và thiết lập mật khẩu mới</p>
             </div>
-        </c:if>
 
-        <form action="${pageContext.request.contextPath}/reset-password" method="post">
-            <input type="hidden" name="user" value="${user}">
-
-            <div class="form-group">
-                <label>Mã OTP (6 chữ số) <span style="color:#ef4444;">*</span></label>
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-shield-alt"></i></span>
-                    <input type="text" name="otp" class="form-control otp-input" maxlength="6" placeholder="000000" pattern="[0-9]{6}" required autofocus>
+            <c:if test="${not empty alert}">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa fa-circle-exclamation me-2"></i> ${alert}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
-            </div>
+            </c:if>
 
-            <div class="form-group">
-                <label>Mật khẩu mới <span style="color:#ef4444;">*</span></label>
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                    <input type="password" name="newPassword" class="form-control" placeholder="Nhập mật khẩu mới" required>
+            <form action="${pageContext.request.contextPath}/reset-password" method="post" class="needs-validation" novalidate id="resetForm">
+                <input type="hidden" name="user" value="${user}">
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Mã xác thực OTP (6 chữ số) <span class="text-danger">*</span></label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text"><i class="fa fa-shield-alt text-secondary"></i></span>
+                        <input type="text" 
+                               name="otp" 
+                               id="otp"
+                               class="form-control otp-input ${not empty errors['otp'] ? 'is-invalid' : ''}" 
+                               placeholder="123456" 
+                               value="${otp != null ? otp : param.otp}" 
+                               required 
+                               maxlength="6" 
+                               pattern="^[0-9]{6}$">
+                        <div class="invalid-feedback">
+                            ${not empty errors['otp'] ? errors['otp'] : 'Vui lòng nhập đúng 6 chữ số mã OTP!'}
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label>Xác nhận mật khẩu mới <span style="color:#ef4444;">*</span></label>
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-check-double"></i></span>
-                    <input type="password" name="confirmPassword" class="form-control" placeholder="Nhập lại mật khẩu mới" required>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Mật khẩu mới <span class="text-danger">*</span></label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text"><i class="fa fa-lock text-secondary"></i></span>
+                        <input type="password" 
+                               name="newPassword" 
+                               id="newPassword"
+                               class="form-control ${not empty errors['newPassword'] ? 'is-invalid' : ''}" 
+                               placeholder="Tối thiểu 6 ký tự" 
+                               required 
+                               minlength="6">
+                        <div class="invalid-feedback">
+                            ${not empty errors['newPassword'] ? errors['newPassword'] : 'Mật khẩu mới phải có tối thiểu 6 ký tự!'}
+                        </div>
+                    </div>
                 </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold small">Xác nhận mật khẩu mới <span class="text-danger">*</span></label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text"><i class="fa fa-check-double text-secondary"></i></span>
+                        <input type="password" 
+                               name="confirmPassword" 
+                               id="confirmPassword"
+                               class="form-control ${not empty errors['confirmPassword'] ? 'is-invalid' : ''}" 
+                               placeholder="Nhập lại mật khẩu mới" 
+                               required>
+                        <div class="invalid-feedback" id="confirmFeedback">
+                            ${not empty errors['confirmPassword'] ? errors['confirmPassword'] : 'Vui lòng xác nhận mật khẩu mới trùng khớp!'}
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                    <i class="fa fa-check-circle me-1"></i> Lưu Mật Khẩu Mới
+                </button>
+            </form>
+
+            <div class="text-center mt-4 pt-3 border-top small">
+                <a href="${pageContext.request.contextPath}/login" class="text-decoration-none text-secondary">
+                    <i class="fa fa-arrow-left me-1"></i> Quay lại Đăng Nhập
+                </a>
             </div>
-
-            <button type="submit" class="btn-submit">
-                <i class="fa fa-save"></i> Cập Nhật Mật Khẩu
-            </button>
-        </form>
-
-        <div class="footer-links">
-            <a href="${pageContext.request.contextPath}/login">&larr; Hủy & Quay lại Đăng nhập</a>
         </div>
     </div>
+
+    <script>
+        (function () {
+            'use strict';
+            const form = document.getElementById('resetForm');
+            const pass = document.getElementById('newPassword');
+            const confirm = document.getElementById('confirmPassword');
+            const confirmFeedback = document.getElementById('confirmFeedback');
+
+            function validateMatch() {
+                if (confirm.value && confirm.value !== pass.value) {
+                    confirm.setCustomValidity('Mật khẩu xác nhận không khớp');
+                    confirmFeedback.textContent = 'Mật khẩu xác nhận không trùng khớp!';
+                } else {
+                    confirm.setCustomValidity('');
+                    confirmFeedback.textContent = 'Vui lòng xác nhận mật khẩu mới trùng khớp!';
+                }
+            }
+
+            pass.addEventListener('input', validateMatch);
+            confirm.addEventListener('input', validateMatch);
+
+            form.addEventListener('submit', function (event) {
+                validateMatch();
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        })();
+    </script>
 </body>
 </html>

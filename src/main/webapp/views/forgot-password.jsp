@@ -5,144 +5,87 @@
 <head>
     <meta charset="UTF-8">
     <title>Quên Mật Khẩu - Nhận Mã OTP</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', 'Segoe UI', Arial, sans-serif; }
-        body {
-            background: linear-gradient(135deg, #1e293b 0%, #0284c7 100%);
-            min-height: 100vh;
+        .auth-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 40px 15px;
+            min-height: calc(100vh - 200px);
         }
-        .card {
+        .card-custom {
             background: white;
-            padding: 35px 40px;
+            padding: 35px 35px;
             border-radius: 14px;
             width: 100%;
             max-width: 440px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-        }
-        .icon-circle {
-            width: 65px;
-            height: 65px;
-            background: #fee2e2;
-            color: #ef4444;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin: 0 auto 15px;
-        }
-        .card h2 {
-            text-align: center;
-            color: #1e293b;
-            margin-bottom: 8px;
-            font-size: 22px;
-            font-weight: 700;
-        }
-        .desc {
-            text-align: center;
-            font-size: 14px;
-            color: #64748b;
-            margin-bottom: 22px;
-            line-height: 1.5;
-        }
-        .alert-danger {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            border-left: 4px solid #ef4444;
-        }
-        .input-group {
-            display: flex;
-            align-items: center;
-            border: 1.5px solid #cbd5e1;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: border-color 0.2s;
-            margin-bottom: 20px;
-        }
-        .input-group:focus-within {
-            border-color: #0284c7;
-        }
-        .input-group-addon {
-            padding: 12px 14px;
-            background: #f1f5f9;
-            color: #64748b;
-            font-size: 15px;
-        }
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            outline: none;
-            font-size: 15px;
-        }
-        .btn-submit {
-            width: 100%;
-            padding: 13px;
-            background: #0284c7;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-submit:hover {
-            background: #0369a1;
-        }
-        .footer-links {
-            text-align: center;
-            margin-top: 22px;
-            font-size: 14px;
-        }
-        .footer-links a {
-            color: #0284c7;
-            text-decoration: none;
-            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="icon-circle">
-            <i class="fa fa-key"></i>
-        </div>
-
-        <h2>Quên Mật Khẩu?</h2>
-        <p class="desc">Nhập Email hoặc Tên đăng nhập của tài khoản. Chúng tôi sẽ gửi mã OTP gồm 6 chữ số để bạn thiết lập lại mật khẩu.</p>
-
-        <c:if test="${not empty alert}">
-            <div class="alert-danger">
-                <i class="fa fa-circle-exclamation"></i> ${alert}
-            </div>
-        </c:if>
-
-        <form action="${pageContext.request.contextPath}/forgot-password" method="post">
-            <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <input type="text" name="emailOrUsername" class="form-control" placeholder="Email hoặc Tên đăng nhập" value="${emailOrUsername}" required autofocus>
+    <div class="auth-container">
+        <div class="card-custom">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-key fa-3x text-danger mb-2"></i>
+                <h3 class="fw-bold mb-1">Quên Mật Khẩu</h3>
+                <p class="text-muted small">Nhập tên đăng nhập hoặc email đã đăng ký để nhận mã OTP lấy lại mật khẩu</p>
             </div>
 
-            <button type="submit" class="btn-submit">
-                <i class="fa fa-paper-plane"></i> Gửi Mã OTP Xác Nhận
-            </button>
-        </form>
+            <c:if test="${not empty alert}">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa fa-circle-exclamation me-2"></i> ${alert}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </c:if>
 
-        <div class="footer-links">
-            <a href="${pageContext.request.contextPath}/login">&larr; Quay lại Đăng nhập</a>
+            <form action="${pageContext.request.contextPath}/forgot-password" method="post" class="needs-validation" novalidate id="forgotForm">
+                <div class="mb-4">
+                    <label class="form-label fw-semibold small">Tên đăng nhập hoặc Email <span class="text-danger">*</span></label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text"><i class="fa fa-envelope-open text-secondary"></i></span>
+                        <input type="text" 
+                               name="emailOrUsername" 
+                               id="emailOrUsername"
+                               class="form-control ${not empty errors['emailOrUsername'] ? 'is-invalid' : ''}" 
+                               placeholder="Nhập username hoặc email..." 
+                               value="${emailOrUsername != null ? emailOrUsername : param.emailOrUsername}" 
+                               required 
+                               minlength="3">
+                        <div class="invalid-feedback">
+                            ${not empty errors['emailOrUsername'] ? errors['emailOrUsername'] : 'Vui lòng nhập tên đăng nhập hoặc email hợp lệ (tối thiểu 3 ký tự)!'}
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                    <i class="fa fa-paper-plane me-1"></i> Gửi Mã OTP Xác Nhận
+                </button>
+            </form>
+
+            <div class="text-center mt-4 pt-3 border-top small">
+                <a href="${pageContext.request.contextPath}/login" class="text-decoration-none text-secondary">
+                    <i class="fa fa-arrow-left me-1"></i> Quay lại Đăng Nhập
+                </a>
+            </div>
         </div>
     </div>
+
+    <script>
+        (function () {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
 </body>
 </html>

@@ -86,9 +86,39 @@ public class CategoryController extends HttpServlet {
             }
             String images = req.getParameter("images");
 
+            // VALIDATION CHO FORM INSERT DANH MỤC
+            java.util.Map<String, String> errors = new java.util.HashMap<>();
+            if (categoryname == null || categoryname.trim().isEmpty()) {
+                errors.put("categoryname", "Vui lòng nhập tên danh mục!");
+            } else if (categoryname.trim().length() < 2) {
+                errors.put("categoryname", "Tên danh mục phải có độ dài ít nhất 2 ký tự!");
+            } else if (categoryname.trim().length() > 100) {
+                errors.put("categoryname", "Tên danh mục không được vượt quá 100 ký tự!");
+            }
+
+            try {
+                Part part = req.getPart("images1");
+                if (part != null && part.getSize() > 0 && part.getSubmittedFileName() != null && !part.getSubmittedFileName().isEmpty()) {
+                    if (!vn.iotstar.util.ValidationUtil.isValidImageExtension(part.getSubmittedFileName())) {
+                        errors.put("images1", "Định dạng file không hợp lệ! Chỉ chấp nhận JPG, JPEG, PNG, WEBP, GIF.");
+                    } else if (part.getSize() > 10 * 1024 * 1024) {
+                        errors.put("images1", "Kích thước ảnh không được vượt quá 10MB!");
+                    }
+                }
+            } catch (Exception ignored) {}
+
+            if (!errors.isEmpty()) {
+                req.setAttribute("errors", errors);
+                req.setAttribute("categoryname", categoryname);
+                req.setAttribute("images", images);
+                req.setAttribute("status", status);
+                req.getRequestDispatcher("/views/admin/category-add.jsp").forward(req, resp);
+                return;
+            }
+
             // đưa dữ liệu vào model
             Category category = new Category();
-            category.setCategoryname(categoryname);
+            category.setCategoryname(categoryname.trim());
             category.setStatus(status);
 
             String fname = "";
@@ -121,11 +151,16 @@ public class CategoryController extends HttpServlet {
 
             // chuyển trang
             resp.sendRedirect(req.getContextPath() + "/admin/categories");
+            return;
         }
 
         if (url.contains("/admin/category/update")) {
             // lấy dữ liệu từ form
-            int categoryid = Integer.parseInt(req.getParameter("categoryid"));
+            int categoryid = 0;
+            try {
+                categoryid = Integer.parseInt(req.getParameter("categoryid"));
+            } catch (Exception ignored) {}
+
             String categoryname = req.getParameter("categoryname");
             int status = 1;
             try {
@@ -134,15 +169,44 @@ public class CategoryController extends HttpServlet {
             }
             String images = req.getParameter("images");
 
-            // đưa dữ liệu vào model
+            // VALIDATION CHO FORM EDIT DANH MỤC
+            java.util.Map<String, String> errors = new java.util.HashMap<>();
+            if (categoryname == null || categoryname.trim().isEmpty()) {
+                errors.put("categoryname", "Vui lòng nhập tên danh mục!");
+            } else if (categoryname.trim().length() < 2) {
+                errors.put("categoryname", "Tên danh mục phải có độ dài ít nhất 2 ký tự!");
+            } else if (categoryname.trim().length() > 100) {
+                errors.put("categoryname", "Tên danh mục không được vượt quá 100 ký tự!");
+            }
+
+            try {
+                Part part = req.getPart("images1");
+                if (part != null && part.getSize() > 0 && part.getSubmittedFileName() != null && !part.getSubmittedFileName().isEmpty()) {
+                    if (!vn.iotstar.util.ValidationUtil.isValidImageExtension(part.getSubmittedFileName())) {
+                        errors.put("images1", "Định dạng file không hợp lệ! Chỉ chấp nhận JPG, JPEG, PNG, WEBP, GIF.");
+                    } else if (part.getSize() > 10 * 1024 * 1024) {
+                        errors.put("images1", "Kích thước ảnh không được vượt quá 10MB!");
+                    }
+                }
+            } catch (Exception ignored) {}
+
             Category category = cateService.findById(categoryid);
             if (category == null) {
                 resp.sendRedirect(req.getContextPath() + "/admin/categories");
                 return;
             }
 
+            if (!errors.isEmpty()) {
+                req.setAttribute("errors", errors);
+                category.setCategoryname(categoryname);
+                category.setStatus(status);
+                req.setAttribute("cate", category);
+                req.getRequestDispatcher("/views/admin/category-edit.jsp").forward(req, resp);
+                return;
+            }
+
             String fileold = category.getImages();
-            category.setCategoryname(categoryname);
+            category.setCategoryname(categoryname.trim());
             category.setStatus(status);
 
             String fname = "";
@@ -178,6 +242,7 @@ public class CategoryController extends HttpServlet {
 
             // chuyển trang
             resp.sendRedirect(req.getContextPath() + "/admin/categories");
+            return;
         }
     }
 

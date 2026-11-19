@@ -5,191 +5,139 @@
 <head>
     <meta charset="UTF-8">
     <title>Đăng Nhập Vào Hệ Thống</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', 'Segoe UI', Arial, sans-serif; }
-        body {
-            background: linear-gradient(135deg, #1e293b 0%, #0284c7 100%);
-            min-height: 100vh;
+        .auth-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 40px 15px;
+            min-height: calc(100vh - 200px);
         }
         .login-card {
             background: white;
-            padding: 35px 40px;
+            padding: 35px 35px;
             border-radius: 14px;
             width: 100%;
             max-width: 440px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-        }
-        .login-card h2 {
-            text-align: center;
-            color: #1e293b;
-            margin-bottom: 22px;
-            font-size: 24px;
-            font-weight: 700;
-        }
-        .alert-danger {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            border-left: 4px solid #ef4444;
-            line-height: 1.5;
-        }
-        .alert-success {
-            background: #dcfce7;
-            color: #15803d;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            border-left: 4px solid #22c55e;
-            line-height: 1.5;
-        }
-        .form-group {
-            margin-bottom: 18px;
-        }
-        .input-group {
-            display: flex;
-            align-items: center;
-            border: 1.5px solid #cbd5e1;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: border-color 0.2s;
-        }
-        .input-group:focus-within {
-            border-color: #0284c7;
-        }
-        .input-group-addon {
-            padding: 12px 14px;
-            background: #f1f5f9;
-            color: #64748b;
-            font-size: 15px;
-        }
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            outline: none;
-            font-size: 15px;
-        }
-        .options-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 22px;
-            font-size: 14px;
-            color: #475569;
-        }
-        .btn-submit {
-            width: 100%;
-            padding: 13px;
-            background: #0284c7;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-submit:hover {
-            background: #0369a1;
-        }
-        .footer-links {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 22px;
-            font-size: 14px;
-            color: #64748b;
-        }
-        .footer-links a {
-            color: #0284c7;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .demo-accounts {
-            margin-top: 20px;
-            padding: 12px;
-            background: #f8fafc;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #64748b;
-            border: 1px dashed #cbd5e1;
-            line-height: 1.7;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
         }
     </style>
 </head>
 <body>
-    <div class="login-card">
-        <h2>Đăng Nhập Vào Hệ Thống</h2>
-
-        <c:if test="${not empty successMsg}">
-            <div class="alert-success">
-                <i class="fa fa-circle-check"></i> ${successMsg}
+    <div class="auth-container">
+        <div class="login-card">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-circle-user fa-3x text-primary mb-2"></i>
+                <h3 class="fw-bold mb-1">Đăng Nhập</h3>
+                <p class="text-muted small">Chào mừng bạn quay lại hệ thống quản lý Media</p>
             </div>
-        </c:if>
 
-        <c:if test="${not empty alert}">
-            <div class="alert-danger">
-                <i class="fa fa-circle-exclamation"></i> ${alert}
-                <c:if test="${not empty unactivatedUsername}">
-                    <div style="margin-top: 8px;">
-                        <a href="${pageContext.request.contextPath}/verify-otp?username=${unactivatedUsername}" style="color: #0284c7; font-weight: 700;">
-                            👉 Bấm vào đây để nhập mã OTP kích hoạt tài khoản
-                        </a>
+            <c:if test="${not empty successMsg}">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fa fa-circle-check me-2"></i> ${successMsg}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </c:if>
+
+            <c:if test="${not empty alert}">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa fa-circle-exclamation me-2"></i> ${alert}
+                    <c:if test="${not empty unactivatedUsername}">
+                        <div class="mt-2">
+                            <a href="${pageContext.request.contextPath}/verify-otp?username=${unactivatedUsername}" class="btn btn-sm btn-outline-danger">
+                                <i class="fa fa-key me-1"></i> Nhập mã OTP kích hoạt ngay
+                            </a>
+                        </div>
+                    </c:if>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </c:if>
+
+            <!-- FORM ĐĂNG NHẬP VỚI CLIENT & SERVER VALIDATION -->
+            <form action="${pageContext.request.contextPath}/login" method="post" class="needs-validation" novalidate id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Tài khoản hoặc Email <span class="text-danger">*</span></label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text"><i class="fa fa-user text-secondary"></i></span>
+                        <input type="text" 
+                               placeholder="Nhập username hoặc email" 
+                               name="username" 
+                               id="username"
+                               class="form-control ${not empty errors['username'] ? 'is-invalid' : ''}" 
+                               value="${username != null ? username : (param.username != null ? param.username : unactivatedUsername)}" 
+                               required 
+                               minlength="3">
+                        <div class="invalid-feedback">
+                            ${not empty errors['username'] ? errors['username'] : 'Vui lòng nhập tài khoản hoặc email hợp lệ (tối thiểu 3 ký tự)!'}
+                        </div>
                     </div>
-                </c:if>
-            </div>
-        </c:if>
-
-        <form action="${pageContext.request.contextPath}/login" method="post">
-            <div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                    <input type="text" placeholder="Tài khoản hoặc Email" name="username" class="form-control" value="${param.username != null ? param.username : unactivatedUsername}" required>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                    <input type="password" placeholder="Mật khẩu" name="password" class="form-control" required>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Mật khẩu <span class="text-danger">*</span></label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text"><i class="fa fa-lock text-secondary"></i></span>
+                        <input type="password" 
+                               placeholder="Nhập mật khẩu" 
+                               name="password" 
+                               id="password"
+                               class="form-control ${not empty errors['password'] ? 'is-invalid' : ''}" 
+                               required 
+                               minlength="4">
+                        <div class="invalid-feedback">
+                            ${not empty errors['password'] ? errors['password'] : 'Vui lòng nhập mật khẩu (tối thiểu 4 ký tự)!'}
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="options-row">
-                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                    <input type="checkbox" name="remember" value="on"> Nhớ tôi (Cookie)
-                </label>
-                <a href="${pageContext.request.contextPath}/forgot-password" style="color: #ef4444; text-decoration: none; font-weight: 500;">
-                    <i class="fa fa-key"></i> Quên mật khẩu?
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="remember" id="rememberMe" value="on">
+                        <label class="form-check-label small text-muted" for="rememberMe">
+                            Ghi nhớ đăng nhập
+                        </label>
+                    </div>
+                    <a href="${pageContext.request.contextPath}/forgot-password" class="small text-danger text-decoration-none fw-semibold">
+                        Quên mật khẩu?
+                    </a>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                    <i class="fa fa-sign-in-alt me-1"></i> Đăng Nhập
+                </button>
+            </form>
+
+            <div class="text-center mt-4 pt-3 border-top small text-muted">
+                Chưa có tài khoản? 
+                <a href="${pageContext.request.contextPath}/register" class="text-primary text-decoration-none fw-semibold">
+                    Đăng ký ngay
                 </a>
             </div>
 
-            <button type="submit" class="btn-submit">Đăng nhập</button>
-        </form>
-
-        <div class="footer-links">
-            <span>Chưa có tài khoản? <a href="${pageContext.request.contextPath}/register">Đăng ký ngay</a></span>
-            <a href="${pageContext.request.contextPath}/home"><i class="fa fa-home"></i> Trang chủ</a>
-        </div>
-
-        <div class="demo-accounts">
-            <strong>Tài khoản có sẵn trong DB webst2:</strong><br>
-            • Admin: <code>admin</code> / <code>123456</code><br>
-            • Manager: <code>manager</code> / <code>123456</code><br>
-            • User: <code>user</code> / <code>123456</code><br>
-            <em>Mật khẩu được mã hóa an toàn bằng thuật toán BCrypt.</em>
+            <div class="mt-3 p-3 bg-light rounded-3 small border border-dashed">
+                <span class="fw-bold text-dark"><i class="fa fa-info-circle text-primary me-1"></i>Tài khoản test trong DB:</span><br>
+                &bull; Admin: <code>admin</code> / <code>123456</code><br>
+                &bull; User: <code>user</code> / <code>123456</code>
+            </div>
         </div>
     </div>
+
+    <!-- Script kích hoạt Bootstrap 5 Client-side validation -->
+    <script>
+        (function () {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
 </body>
 </html>

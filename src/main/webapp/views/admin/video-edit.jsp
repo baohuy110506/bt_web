@@ -5,120 +5,142 @@
 <head>
     <meta charset="UTF-8">
     <title>Chỉnh Sửa Video - Admin (JPA)</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', 'Segoe UI', Arial, sans-serif; }
-        body { background: #f1f5f9; color: #1e293b; display: flex; flex-direction: column; min-height: 100vh; }
-        .admin-header { background: #0284c7; color: white; padding: 14px 30px; display: flex; justify-content: space-between; align-items: center; }
-        .admin-header h2 { font-size: 20px; font-weight: 700; }
-        .admin-layout { display: flex; flex: 1; }
-        .sidebar { width: 260px; background: #0f172a; color: #94a3b8; padding: 25px 0; display: flex; flex-direction: column; }
-        .sidebar-menu { list-style: none; margin-top: 15px; }
-        .sidebar-menu li a { display: flex; align-items: center; gap: 12px; padding: 12px 25px; color: #cbd5e1; text-decoration: none; font-size: 14px; font-weight: 500; }
-        .sidebar-menu li.active a { background: #0284c7; color: white; }
-        .content { flex: 1; padding: 30px; }
-        .content-card { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 800px; }
-        .page-title { font-size: 22px; color: #1e293b; margin-bottom: 25px; font-weight: 700; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; color: #334155; }
-        .form-control { width: 100%; padding: 11px 14px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
-        .form-control:focus { border-color: #0284c7; }
-        textarea.form-control { resize: vertical; min-height: 100px; }
-        .btn-submit { background: #0284c7; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
-        .btn-submit:hover { background: #0369a1; }
-        .btn-cancel { background: #f1f5f9; color: #475569; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600; margin-left: 10px; }
-        .current-poster { width: 160px; height: 100px; object-fit: cover; border-radius: 6px; margin-bottom: 10px; display: block; border: 1px solid #cbd5e1; }
-    </style>
 </head>
 <body>
-    <div class="admin-header">
-        <h2><i class="fa fa-film"></i> Quản Lý Video - Chỉnh Sửa</h2>
-        <a href="${pageContext.request.contextPath}/admin/videos" style="color: white; text-decoration: none; font-size: 14px;">
-            &larr; Trở về danh sách
-        </a>
-    </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-9 col-xl-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="card-title fw-bold text-primary mb-0">
+                        <i class="fa fa-pen-to-square me-2"></i>Cập Nhật Video: ${video.videoId}
+                    </h5>
+                    <a href="${pageContext.request.contextPath}/admin/videos" class="btn btn-outline-secondary btn-sm">
+                        <i class="fa fa-arrow-left me-1"></i> Trở Về Danh Sách
+                    </a>
+                </div>
+                <div class="card-body p-4">
+                    <c:if test="${not empty alert}">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fa fa-circle-exclamation me-2"></i> ${alert}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </c:if>
 
-    <div class="admin-layout">
-        <div class="sidebar">
-            <ul class="sidebar-menu">
-                <li><a href="${pageContext.request.contextPath}/home"><i class="fa fa-home"></i> Trang Chủ</a></li>
-                <li><a href="${pageContext.request.contextPath}/video"><i class="fa fa-play"></i> Video Của Tôi (/video)</a></li>
-                <li><a href="${pageContext.request.contextPath}/admin/categories"><i class="fa fa-folder-open"></i> Quản Lý Danh Mục</a></li>
-                <li class="active"><a href="${pageContext.request.contextPath}/admin/videos"><i class="fa fa-film"></i> CRUD Videos</a></li>
-            </ul>
-        </div>
+                    <form action="${pageContext.request.contextPath}/admin/video/update" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        <input type="hidden" name="videoId" value="${video.videoId}">
 
-        <div class="content">
-            <div class="content-card">
-                <h1 class="page-title"><i class="fa fa-edit" style="color: #0284c7;"></i> Cập Nhật Video: ${video.videoId}</h1>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-5">
+                                <label class="form-label fw-semibold small">Mã Video (Cố định)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa fa-hashtag text-secondary"></i></span>
+                                    <input type="text" class="form-control bg-light" value="${video.videoId}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <label class="form-label fw-semibold small">Danh Mục Phân Loại <span class="text-danger">*</span></label>
+                                <select name="categoryId" class="form-select ${not empty errors['categoryId'] ? 'is-invalid' : ''}" required>
+                                    <option value="">-- Chọn danh mục liên kết --</option>
+                                    <c:forEach items="${cateList}" var="c">
+                                        <option value="${c.categoryid}" ${(selectedCategoryId != null && selectedCategoryId == c.categoryid) || (video.category != null && video.category.categoryid == c.categoryid) ? 'selected' : ''}>
+                                            ${c.categoryname}
+                                        </option>
+                                    </c:forEach>
+                                </select>
+                                <div class="invalid-feedback">
+                                    ${not empty errors['categoryId'] ? errors['categoryId'] : 'Vui lòng chọn danh mục liên kết!'}
+                                </div>
+                            </div>
+                        </div>
 
-                <form action="${pageContext.request.contextPath}/admin/video/update" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="videoId" value="${video.videoId}">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Tiêu Đề Video <span class="text-danger">*</span></label>
+                            <input type="text" 
+                                   name="title" 
+                                   id="title"
+                                   class="form-control ${not empty errors['title'] ? 'is-invalid' : ''}" 
+                                   value="${video.title}" 
+                                   required 
+                                   minlength="3" 
+                                   maxlength="200">
+                            <div class="invalid-feedback">
+                                ${not empty errors['title'] ? errors['title'] : 'Tiêu đề video phải từ 3 đến 200 ký tự!'}
+                            </div>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Mã Video (Không được sửa)</label>
-                        <input type="text" class="form-control" value="${video.videoId}" disabled style="background: #f1f5f9;">
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small d-block">Ảnh Poster Hiện Tại</label>
+                            <c:choose>
+                                <c:when test="${not empty video.poster && video.poster.startsWith('http')}">
+                                    <img src="${video.poster}" alt="Poster" class="rounded border p-1 mb-2" style="max-height: 120px; max-width: 200px; object-fit: cover;">
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="${pageContext.request.contextPath}/image?fname=${video.poster}" alt="Poster" class="rounded border p-1 mb-2" style="max-height: 120px; max-width: 200px; object-fit: cover;">
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Tiêu Đề Video <span style="color:#ef4444;">*</span></label>
-                        <input type="text" name="title" class="form-control" value="${video.title}" required>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Thay Đổi Ảnh Poster (Upload Multipart)</label>
+                            <input type="file" 
+                                   name="posterFile" 
+                                   class="form-control ${not empty errors['posterFile'] ? 'is-invalid' : ''}" 
+                                   accept="image/*">
+                            <div class="invalid-feedback">
+                                ${errors['posterFile']}
+                            </div>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Danh Mục Phân Loại</label>
-                        <select name="categoryId" class="form-control">
-                            <option value="0">-- Chọn danh mục liên kết --</option>
-                            <c:forEach items="${cateList}" var="c">
-                                <option value="${c.categoryid}" ${video.category != null && video.category.categoryid == c.categoryid ? 'selected' : ''}>
-                                    ${c.categoryname}
-                                </option>
-                            </c:forEach>
-                        </select>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Hoặc URL Poster Trực Tiếp</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa fa-link text-secondary"></i></span>
+                                <input type="text" name="poster" class="form-control" value="${video.poster}">
+                            </div>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Ảnh Poster Hiện Tại</label>
-                        <c:choose>
-                            <c:when test="${not empty video.poster && video.poster.startsWith('http')}">
-                                <img src="${video.poster}" alt="Poster" class="current-poster">
-                            </c:when>
-                            <c:otherwise>
-                                <img src="${pageContext.request.contextPath}/image?fname=${video.poster}" alt="Poster" class="current-poster">
-                            </c:otherwise>
-                        </c:choose>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Mô Tả Video</label>
+                            <textarea name="description" class="form-control" rows="3">${video.description}</textarea>
+                        </div>
 
-                        <label style="margin-top: 10px;">Thay đổi ảnh Poster mới (Upload Multipart)</label>
-                        <input type="file" name="posterFile" class="form-control" accept="image/*">
-                    </div>
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="active" value="1" id="activeVideoEdit" ${video.active == 1 ? 'checked' : ''}>
+                                <label class="form-check-label fw-medium text-success" for="activeVideoEdit">
+                                    Kích hoạt hiển thị video (Active)
+                                </label>
+                            </div>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Hoặc URL Poster Trực Tiếp</label>
-                        <input type="text" name="poster" class="form-control" value="${video.poster}">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Mô Tả Video</label>
-                        <textarea name="description" class="form-control">${video.description}</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                            <input type="checkbox" name="active" value="1" ${video.active ? 'checked' : ''}> 
-                            <span>Kích hoạt video này (Active)</span>
-                        </label>
-                    </div>
-
-                    <div style="margin-top: 30px;">
-                        <button type="submit" class="btn-submit"><i class="fa fa-save"></i> Cập Nhật</button>
-                        <a href="${pageContext.request.contextPath}/admin/videos" class="btn-cancel">Hủy bỏ</a>
-                    </div>
-                </form>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                                <i class="fa fa-save me-1"></i> Cập Nhật Video
+                            </button>
+                            <a href="${pageContext.request.contextPath}/admin/videos" class="btn btn-outline-secondary px-3">
+                                Hủy bỏ
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+
+    <script>
+        (function () {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
 </body>
 </html>

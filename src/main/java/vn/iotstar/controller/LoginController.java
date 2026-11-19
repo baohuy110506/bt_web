@@ -58,10 +58,20 @@ public class LoginController extends HttpServlet {
         String remember = req.getParameter("remember");
         boolean isRememberMe = "on".equals(remember);
 
-        String alertMsg = "";
-        if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-            alertMsg = "Tài khoản hoặc mật khẩu không được rỗng!";
-            req.setAttribute("alert", alertMsg);
+        // Validation kiểm tra tính hợp lệ dữ liệu
+        java.util.Map<String, String> errors = new java.util.HashMap<>();
+        if (username == null || username.trim().isEmpty()) {
+            errors.put("username", "Vui lòng nhập tên đăng nhập hoặc email!");
+        }
+        if (password == null || password.trim().isEmpty()) {
+            errors.put("password", "Vui lòng nhập mật khẩu!");
+        } else if (password.trim().length() < 4) {
+            errors.put("password", "Mật khẩu phải có độ dài ít nhất 4 ký tự!");
+        }
+
+        if (!errors.isEmpty()) {
+            req.setAttribute("errors", errors);
+            req.setAttribute("username", username);
             req.getRequestDispatcher("/views/login.jsp").forward(req, resp);
             return;
         }
@@ -71,7 +81,7 @@ public class LoginController extends HttpServlet {
         if (user != null) {
             // Kiểm tra trạng thái kích hoạt tài khoản bằng OTP email
             if (user.getStatus() == 0) {
-                alertMsg = "Tài khoản của bạn chưa được kích hoạt qua mã OTP email! Vui lòng kiểm tra email hoặc kích hoạt tài khoản.";
+                String alertMsg = "Tài khoản của bạn chưa được kích hoạt qua mã OTP email! Vui lòng kiểm tra email hoặc kích hoạt tài khoản.";
                 req.setAttribute("alert", alertMsg);
                 req.setAttribute("unactivatedUsername", user.getUserName());
                 req.setAttribute("unactivatedEmail", user.getEmail());
@@ -89,8 +99,8 @@ public class LoginController extends HttpServlet {
 
             resp.sendRedirect(req.getContextPath() + "/waiting");
         } else {
-            alertMsg = "Tài khoản hoặc mật khẩu không chính xác!";
-            req.setAttribute("alert", alertMsg);
+            req.setAttribute("alert", "Tài khoản hoặc mật khẩu không chính xác!");
+            req.setAttribute("username", username);
             req.getRequestDispatcher("/views/login.jsp").forward(req, resp);
         }
     }

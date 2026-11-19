@@ -109,10 +109,54 @@ public class VideoManageController extends HttpServlet {
                 categoryId = Integer.parseInt(req.getParameter("categoryId"));
             } catch (Exception ignored) {}
 
+            // VALIDATION CHO FORM INSERT VIDEO
+            java.util.Map<String, String> errors = new java.util.HashMap<>();
+            if (videoId == null || videoId.trim().isEmpty()) {
+                errors.put("videoId", "Vui lòng nhập mã Video (Video ID)!");
+            } else if (!vn.iotstar.util.ValidationUtil.isValidVideoId(videoId.trim())) {
+                errors.put("videoId", "Mã Video phải từ 2-50 ký tự, chỉ chứa chữ cái, số, gạch nối hoặc gạch dưới!");
+            } else if (videoService.findById(videoId.trim()) != null) {
+                errors.put("videoId", "Mã Video '" + videoId.trim() + "' đã tồn tại trong CSDL! Vui lòng chọn mã khác.");
+            }
+
+            if (title == null || title.trim().isEmpty()) {
+                errors.put("title", "Vui lòng nhập tiêu đề Video!");
+            } else if (title.trim().length() < 3) {
+                errors.put("title", "Tiêu đề Video phải có độ dài ít nhất 3 ký tự!");
+            } else if (title.trim().length() > 200) {
+                errors.put("title", "Tiêu đề Video không được vượt quá 200 ký tự!");
+            }
+
+            if (categoryId <= 0) {
+                errors.put("categoryId", "Vui lòng chọn danh mục liên kết cho video!");
+            }
+
+            try {
+                Part part = req.getPart("posterFile");
+                if (part != null && part.getSize() > 0 && part.getSubmittedFileName() != null && !part.getSubmittedFileName().isEmpty()) {
+                    if (!vn.iotstar.util.ValidationUtil.isValidImageExtension(part.getSubmittedFileName())) {
+                        errors.put("posterFile", "Định dạng file không hợp lệ! Chỉ chấp nhận JPG, JPEG, PNG, WEBP, GIF.");
+                    }
+                }
+            } catch (Exception ignored) {}
+
+            if (!errors.isEmpty()) {
+                req.setAttribute("errors", errors);
+                req.setAttribute("videoId", videoId);
+                req.setAttribute("title", title);
+                req.setAttribute("description", description);
+                req.setAttribute("poster", posterUrl);
+                req.setAttribute("active", active);
+                req.setAttribute("selectedCategoryId", categoryId);
+                req.setAttribute("cateList", categoryService.findAll());
+                req.getRequestDispatcher("/views/admin/video-add.jsp").forward(req, resp);
+                return;
+            }
+
             Video video = new Video();
-            video.setVideoId(videoId != null ? videoId.trim() : "v" + System.currentTimeMillis());
-            video.setTitle(title);
-            video.setDescription(description);
+            video.setVideoId(videoId.trim());
+            video.setTitle(title.trim());
+            video.setDescription(description != null ? description.trim() : "");
             video.setActive(active);
             video.setViews(0);
 
@@ -145,6 +189,7 @@ public class VideoManageController extends HttpServlet {
             }
 
             resp.sendRedirect(req.getContextPath() + "/admin/videos");
+            return;
 
         } else if (uri.contains("/admin/video/update")) {
             // Cập nhật thông tin video
@@ -158,33 +203,72 @@ public class VideoManageController extends HttpServlet {
                 categoryId = Integer.parseInt(req.getParameter("categoryId"));
             } catch (Exception ignored) {}
 
+            // VALIDATION CHO FORM EDIT VIDEO
+            java.util.Map<String, String> errors = new java.util.HashMap<>();
             Video video = videoService.findById(videoId);
-            if (video != null) {
+            if (video == null) {
+                resp.sendRedirect(req.getContextPath() + "/admin/videos");
+                return;
+            }
+
+            if (title == null || title.trim().isEmpty()) {
+                errors.put("title", "Vui lòng nhập tiêu đề Video!");
+            } else if (title.trim().length() < 3) {
+                errors.put("title", "Tiêu đề Video phải có độ dài ít nhất 3 ký tự!");
+            } else if (title.trim().length() > 200) {
+                errors.put("title", "Tiêu đề Video không được vượt quá 200 ký tự!");
+            }
+
+            if (categoryId <= 0) {
+                errors.put("categoryId", "Vui lòng chọn danh mục liên kết cho video!");
+            }
+
+            try {
+                Part part = req.getPart("posterFile");
+                if (part != null && part.getSize() > 0 && part.getSubmittedFileName() != null && !part.getSubmittedFileName().isEmpty()) {
+                    if (!vn.iotstar.util.ValidationUtil.isValidImageExtension(part.getSubmittedFileName())) {
+                        errors.put("posterFile", "Định dạng file không hợp lệ! Chỉ chấp nhận JPG, JPEG, PNG, WEBP, GIF.");
+                    }
+                }
+            } catch (Exception ignored) {}
+
+            if (!errors.isEmpty()) {
+                req.setAttribute("errors", errors);
                 video.setTitle(title);
                 video.setDescription(description);
                 video.setActive(active);
+                req.setAttribute("video", video);
+                req.setAttribute("selectedCategoryId", categoryId);
+                req.setAttribute("cateList", categoryService.findAll());
+                req.getRequestDispatcher("/views/admin/video-edit.jsp").forward(req, resp);
+                return;
+            }
 
-                if (categoryId > 0) {
-                    Category cate = categoryService.findById(categoryId);
-                    video.setCategory(cate);
-                }
+            video.setTitle(title.trim());
+            video.setDescription(description != null ? description.trim() : "");
+            video.setActive(active);
 
-                // Xử lý upload poster mới nếu có
-                String newPoster = handleFileUpload(req, "posterFile");
-                if (!newPoster.isEmpty()) {
-                    video.setPoster(newPoster);
-                } else if (posterUrl != null && !posterUrl.trim().isEmpty()) {
-                    video.setPoster(posterUrl.trim());
-                }
+            if (categoryId > 0) {
+                Category cate = categoryService.findById(categoryId);
+                video.setCategory(cate);
+            }
 
-                try {
-                    videoService.update(video);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            // Xử lý upload poster mới nếu có
+            String newPoster = handleFileUpload(req, "posterFile");
+            if (!newPoster.isEmpty()) {
+                video.setPoster(newPoster);
+            } else if (posterUrl != null && !posterUrl.trim().isEmpty()) {
+                video.setPoster(posterUrl.trim());
+            }
+
+            try {
+                videoService.update(video);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             resp.sendRedirect(req.getContextPath() + "/admin/videos");
+            return;
         }
     }
 

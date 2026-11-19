@@ -51,39 +51,56 @@ public class RegisterController extends HttpServlet {
         String fullname = req.getParameter("fullname");
         String phone = req.getParameter("phone");
 
-        String alertMsg = "";
+        java.util.Map<String, String> errors = new java.util.HashMap<>();
 
-        if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-            alertMsg = "Vui lòng nhập đầy đủ tài khoản và mật khẩu!";
-            req.setAttribute("alert", alertMsg);
-            req.getRequestDispatcher("/views/register.jsp").forward(req, resp);
-            return;
+        // 1. Kiểm tra username
+        if (username == null || username.trim().isEmpty()) {
+            errors.put("username", "Vui lòng nhập tên đăng nhập!");
+        } else if (!vn.iotstar.util.ValidationUtil.isValidUsername(username.trim())) {
+            errors.put("username", "Tên đăng nhập phải từ 3-30 ký tự, không dấu và không chứa ký tự đặc biệt!");
+        } else if (service.checkExistUsername(username.trim())) {
+            errors.put("username", "Tên đăng nhập này đã được sử dụng!");
         }
 
-        if (email == null || email.trim().isEmpty() || !email.contains("@")) {
-            alertMsg = "Email không hợp lệ! Vui lòng nhập đúng email để nhận mã OTP.";
-            req.setAttribute("alert", alertMsg);
-            req.getRequestDispatcher("/views/register.jsp").forward(req, resp);
-            return;
+        // 2. Kiểm tra email
+        if (email == null || email.trim().isEmpty()) {
+            errors.put("email", "Vui lòng nhập địa chỉ email!");
+        } else if (!vn.iotstar.util.ValidationUtil.isValidEmail(email.trim())) {
+            errors.put("email", "Định dạng email không hợp lệ (Ví dụ: user@example.com)!");
+        } else if (service.checkExistEmail(email.trim())) {
+            errors.put("email", "Email này đã được đăng ký trong hệ thống!");
         }
 
-        if (repassword != null && !repassword.equals(password)) {
-            alertMsg = "Mật khẩu xác nhận không trùng khớp!";
-            req.setAttribute("alert", alertMsg);
-            req.getRequestDispatcher("/views/register.jsp").forward(req, resp);
-            return;
+        // 3. Kiểm tra họ và tên
+        if (fullname != null && !fullname.trim().isEmpty() && fullname.trim().length() < 2) {
+            errors.put("fullname", "Họ và tên phải có ít nhất 2 ký tự!");
         }
 
-        if (service.checkExistUsername(username.trim())) {
-            alertMsg = "Tên đăng nhập đã được sử dụng!";
-            req.setAttribute("alert", alertMsg);
-            req.getRequestDispatcher("/views/register.jsp").forward(req, resp);
-            return;
+        // 4. Kiểm tra số điện thoại nếu có nhập
+        if (phone != null && !phone.trim().isEmpty() && !vn.iotstar.util.ValidationUtil.isValidPhone(phone.trim())) {
+            errors.put("phone", "Số điện thoại không đúng định dạng VN (10 số, bắt đầu bằng 03, 05, 07, 08, 09)!");
         }
 
-        if (service.checkExistEmail(email.trim())) {
-            alertMsg = "Email này đã được sử dụng!";
-            req.setAttribute("alert", alertMsg);
+        // 5. Kiểm tra mật khẩu
+        if (password == null || password.trim().isEmpty()) {
+            errors.put("password", "Vui lòng nhập mật khẩu!");
+        } else if (password.trim().length() < 6) {
+            errors.put("password", "Mật khẩu phải có độ dài tối thiểu 6 ký tự!");
+        }
+
+        // 6. Kiểm tra xác nhận mật khẩu
+        if (repassword == null || repassword.trim().isEmpty()) {
+            errors.put("repassword", "Vui lòng xác nhận lại mật khẩu!");
+        } else if (!repassword.equals(password)) {
+            errors.put("repassword", "Mật khẩu xác nhận không trùng khớp!");
+        }
+
+        if (!errors.isEmpty()) {
+            req.setAttribute("errors", errors);
+            req.setAttribute("username", username);
+            req.setAttribute("email", email);
+            req.setAttribute("fullname", fullname);
+            req.setAttribute("phone", phone);
             req.getRequestDispatcher("/views/register.jsp").forward(req, resp);
             return;
         }
@@ -102,8 +119,7 @@ public class RegisterController extends HttpServlet {
             // Chuyển hướng sang trang nhập mã OTP xác thực tài khoản
             resp.sendRedirect(req.getContextPath() + "/verify-otp?username=" + username.trim());
         } else {
-            alertMsg = "Lỗi hệ thống khi đăng ký tài khoản! Vui lòng thử lại sau.";
-            req.setAttribute("alert", alertMsg);
+            req.setAttribute("alert", "Lỗi hệ thống khi đăng ký tài khoản! Vui lòng thử lại sau.");
             req.getRequestDispatcher("/views/register.jsp").forward(req, resp);
         }
     }
