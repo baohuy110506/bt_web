@@ -143,8 +143,11 @@
                                 <button class="btn btn-outline-light btn-sm dropdown-toggle d-flex align-items-center gap-2"
                                         type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                     <c:choose>
-                                        <c:when test="${not empty sessionScope.account.avatar}">
+                                        <c:when test="${not empty sessionScope.account.avatar && sessionScope.account.avatar.startsWith('http')}">
                                             <img src="${sessionScope.account.avatar}" alt="Avatar" class="user-avatar-sm">
+                                        </c:when>
+                                        <c:when test="${not empty sessionScope.account.avatar}">
+                                            <img src="${pageContext.request.contextPath}/image?fname=${sessionScope.account.avatar}" alt="Avatar" class="user-avatar-sm">
                                         </c:when>
                                         <c:otherwise>
                                             <i class="fa-solid fa-circle-user fs-5 text-info"></i>
